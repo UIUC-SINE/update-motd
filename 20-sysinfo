@@ -11,6 +11,8 @@ IFS=" " read USED AVAIL TOTAL <<<$(free --mega |  awk '/Mem/{print $3,$7,$2}')
 # get gpu stats
 LOAD_GPU=$(nvidia-smi --query-gpu=utilization.gpu --format=csv | awk 'FNR==2{print $1}')
 TEMP_GPU=$(nvidia-smi --query-gpu=temperature.gpu --format=csv | awk 'FNR==2{print $1}')
+MEM_USED_GPU=$(nvidia-smi --query-gpu=memory.used --format=csv | awk 'FNR==2{print $1}')
+MEM_TOT_GPU=$(nvidia-smi --query-gpu=memory.total --format=csv | awk 'FNR==2{print $1}')
 # get processes
 #PROCESS=`ps -eo user=|sort|uniq -c | awk '{ print $2 " " $1 }'`
 #PROCESS_ALL=`echo "$PROCESS"| awk {'print $2'} | awk '{ SUM += $1} END { print SUM }'`
@@ -28,6 +30,7 @@ echo -e "
 ${W}system info:
 $W  Uptime........: $W`uptime -p`
 $W  CPU Load......: $G$LOAD_CPU${W}% ${G}$TEMP_CPU${W}°C
+$W  CPU Memory....: $G$USED${W}/$G$TOTAL${W} MB$W
 $W  GPU Load......: $G$LOAD_GPU${W}% ${G}$TEMP_GPU${W}°C
-$W  Memory........: $G$USED${W}/$G$TOTAL${W} MB$W
+$W  GPU Memory....: $G$MEM_USED_GPU${W}/$G$MEM_TOT_GPU${W} MB$W
 $W  Logged In.....: $G$USERS$W"
